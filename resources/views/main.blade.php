@@ -65,12 +65,15 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
+                            @if(Auth::user())
                             <a class="button is-primary">
-                                <strong>Sign up</strong>
+                                <strong>LOGGED IN as {{ Auth::user()->login }}</strong>
                             </a>
-                            <a class="button is-light">
-                                Log in
+                            @else
+                            <a class="button is-light" href="{{ route('login.github') }}">
+                                Log in / Register
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>

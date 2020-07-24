@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Credential;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Minicli\Curly\Client;
 
 class Login extends Controller
@@ -47,12 +50,45 @@ class Login extends Controller
             parse_str($response['body'], $output);
             $access_token = $output['access_token'];
             //query for user info
-            //saves to DB
+
+            $user_info_url = 'https://api.github.com/user';
+            $response = $curly->get($user_info_url, $this->getHeaders($access_token));
+
+            if ($response['code'] == 200) {
+                $user_info = json_decode($response['body'], true);
+                $user = new User();
+                $user->login = $user_info['login'];
+                //todo fix
+                $user->password = md5(time());
+                $user->save();
+
+                $credential = new Credential();
+                $credential->service_name = 'github';
+                $credential->service_id = $user_info['id'];
+                $credential->service_login = $user_info['login'];
+                $credential->access_token = $access_token;
+
+                $user->credentials()->save($credential);
+
+                Auth::login($user);
+
+                redirect()->route('index');
+            }
+
         } else {
             print_r($response);
         }
 
         return "OK";
+    }
+
+    public function getHeaders($access_token)
+    {
+        return [
+            "User-Agent: SponsorsHub v0.1",
+            "Accept: application/vnd.github.v3+json",
+            "Authorization: token $access_token"
+        ];
     }
 
 }
