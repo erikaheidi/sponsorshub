@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,3 +19,8 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('login', 'Login@main')->name('login.github');
+
+Route::get('logout', function() {
+    Auth::logout();
+    return redirect('index');
+})->name('logout');

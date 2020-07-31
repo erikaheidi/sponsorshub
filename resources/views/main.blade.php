@@ -69,6 +69,9 @@
                             <a class="button is-primary">
                                 <strong>LOGGED IN as {{ Auth::user()->login }}</strong>
                             </a>
+                            <a class="button is-light" href="{{ route('logout') }}">
+                                Logout
+                            </a>
                             @else
                             <a class="button is-light" href="{{ route('login.github') }}">
                                 Log in / Register
