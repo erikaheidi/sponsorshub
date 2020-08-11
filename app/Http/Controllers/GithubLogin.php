@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Minicli\Curly\Client;
 
-class Login extends Controller
+class GithubLogin extends Controller
 {
     public function main(Request $request)
     {

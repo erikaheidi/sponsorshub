@@ -18,7 +18,9 @@ Route::get('/', function () {
     return view('index');
 })->name('index');
 
-Route::get('login', 'Login@main')->name('login.github');
+Route::get('github', 'GithubLogin@main')->name('login.github');
+
+Route::get('twitch', 'TwitchLogin@main')->name('login.twitch');
 
 Route::get('logout', function() {
     Auth::logout();
