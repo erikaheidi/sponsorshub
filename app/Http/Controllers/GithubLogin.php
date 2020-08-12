@@ -15,7 +15,7 @@ class GithubLogin extends Controller
         $login_url = "https://github.com/login/oauth/authorize";
         $client_id =  env('GITHUB_CLIENT_ID');
         $client_secret = env('GITHUB_CLIENT_SECRET');
-        $redirect_uri = 'http://localhost:8000/login';
+        $redirect_uri = 'http://localhost:8000/login/github';
 
         $state = $request->query('state');
 
@@ -59,7 +59,7 @@ class GithubLogin extends Controller
                 }
 
                 $user = new User();
-                $user->login = $user_info['login'];
+                $user->login = $user_info['login'] . '@github';
                 //todo fix
                 $user->password = md5(time());
                 $user->save();

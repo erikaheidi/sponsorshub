@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SponsorsHub  @yield('title')</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @section('headers')
 
     @endsection
@@ -74,7 +74,10 @@
                             </a>
                             @else
                             <a class="button is-light" href="{{ route('login.github') }}">
-                                Log in / Register
+                                <i class="fa fa-github"></i>  Log in via GitHub
+                            </a>
+                            <a class="button is-light" href="{{ route('login.twitch') }}">
+                                <i class="fa fa-twitch"></i>  Log in via Twitch
                             </a>
                             @endif
                         </div>

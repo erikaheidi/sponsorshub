@@ -18,11 +18,11 @@ Route::get('/', function () {
     return view('index');
 })->name('index');
 
-Route::get('github', 'GithubLogin@main')->name('login.github');
+Route::get('login/github', 'GithubLogin@main')->name('login.github');
 
-Route::get('twitch', 'TwitchLogin@main')->name('login.twitch');
+Route::get('login/twitch', 'TwitchLogin@main')->name('login.twitch');
 
 Route::get('logout', function() {
     Auth::logout();
-    return redirect('index');
+    return redirect('/');
 })->name('logout');

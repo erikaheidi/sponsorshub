@@ -14,7 +14,7 @@ class TwitchLogin extends Controller
     {
         $client_id = env('TWITCH_CLIENT_ID');
         $client_secret = env('TWITCH_CLIENT_SECRET');
-        $redirect_uri = 'http://localhost:8080/twitch';
+        $redirect_uri = 'http://localhost:8000/login/twitch';
         $login_url = 'https://id.twitch.tv/oauth2/authorize';
 
         $state = $request->query('state');
@@ -33,15 +33,6 @@ class TwitchLogin extends Controller
             return redirect($auth_url);
         }
 
-        //?response_type=code&client_id=uo6dggojyb8d6soh92zknwmi5ej1q2&redirect_uri=http://localhost&scope=viewing_activity_read&state=c3ab8aa609ea11e793ae92361f002671'
-
-        //https://id.twitch.tv/oauth2/token
-        //    ?client_id=<your client ID>
-        //    &client_secret=<your client secret>
-        //    &code=<authorization code received above>
-        //    &grant_type=authorization_code
-        //    &redirect_uri=<your registered redirect URI>
-
         $code = $request->query('code');
         $token_url = 'https://id.twitch.tv/oauth2/token';
         $curly = new Client();
@@ -55,24 +46,18 @@ class TwitchLogin extends Controller
             $redirect_uri
         ), [], ['Accept:', 'application/json']);
 
-        print_r($response);
-
         if ($response['code'] == 200) {
             $token_response = json_decode($response['body'], 1);
 
             $access_token = $token_response['access_token'];
 
-            $user = $this->getCurrentUser($curly, $client_id, $client_secret);
+            $user_info = $this->getCurrentUser($curly, $client_id, $access_token);
 
-            print_r($user);
+            if ($user_info) {
 
-            if ($response['code'] == 200) {
-                $user_info = json_decode($response['body'], true);
-
-            /*
                 $credential = Credential::firstOrNew([
-                    'service_name' => 'github',
-                    'service_id' => $user_info['id'],
+                    'service_name' => 'twitch',
+                    'service_id' => $user_info['user_id'],
                 ]);
 
                 if ($credential->user instanceof User) {
@@ -81,13 +66,13 @@ class TwitchLogin extends Controller
                 }
 
                 $user = new User();
-                $user->login = $user_info['login'];
+                $user->login = $user_info['login']  . '@twitch';
 
                 $user->password = md5(time());
                 $user->save();
 
-                $credential->service_name = 'github';
-                $credential->service_id = $user_info['id'];
+                $credential->service_name = 'twitch';
+                $credential->service_id = $user_info['user_id'];
                 $credential->service_login = $user_info['login'];
                 $credential->access_token = $access_token;
 
@@ -95,14 +80,13 @@ class TwitchLogin extends Controller
 
                 Auth::login($user);
 
-                return redirect()->route('index');*/
+                return redirect()->route('index');
             }
 
         } else {
+            echo "ERROR.";
             print_r($response);
         }
-
-        return "OK";
     }
 
     public function getCurrentUser(Client $client, $client_id, $access_token)
